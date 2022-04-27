@@ -8,6 +8,7 @@ import 'package:south_africa/components/rounded_password_field.dart';
 import 'package:south_africa/model/user.dart';
 import 'package:south_africa/palette.dart';
 import 'package:south_africa/profile.dart';
+import 'package:another_flushbar/flushbar.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -121,6 +122,7 @@ class _LoginState extends State<Login> {
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
+        print(jsonResponse);
         User userdetails = User.fromJson(jsonResponse);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
@@ -131,11 +133,20 @@ class _LoginState extends State<Login> {
             (Route<dynamic> route) => false);
       }
     } else {
+      print(jsonResponse);
+      setState(() {
+        _isLoading = false;
+      });
       jsonResponse = json.decode(response.body);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(jsonResponse),
-        duration: const Duration(seconds: 3),
-      ));
+      Flushbar(
+        message: jsonResponse.toString(),
+        duration: const Duration(seconds: 2),
+        
+      ).show(context);
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   content: Text(jsonResponse.toString()),
+      //   duration: const Duration(seconds: 2),
+      // ));
     }
   }
 }
